@@ -1,4 +1,5 @@
 import { Field } from './Field';
+import { gameState } from './GameState';
 
 export class Game {
   constructor() {
@@ -20,6 +21,7 @@ export class Game {
   startNewGame(index = 1) {
     const { rows, columns, mines, className} = this.getGameSettingsByIndex(index);
     this.render(className);
+    gameState.startGame();
     this.field = new Field('.field', rows, columns, mines);
   }
 

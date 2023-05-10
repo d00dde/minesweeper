@@ -1,3 +1,5 @@
+import { gameState } from './GameState';
+
 export class Field {
   constructor(selector, rows, columns, mines) {
     this.root = document.querySelector(selector);
@@ -25,13 +27,23 @@ export class Field {
   }
 
   render() {
-    this.root.innerHTML = this.cells.map((cell) => `
-      <div class="cell${cell.isOpen ? ` open count-${cell.aroundMines}` : ''}${cell.isFlagged ? ' flagged' : ''}" data-idx="${cell.idx}">${cell.isMine ? 'M' : ''}</div>
-    `).join('');
+    this.root.innerHTML = this.cells.map((cell) => {
+      let cellClasses = cell.isOpen ? ` open count-${cell.aroundMines}` : '';
+      if(cell.isFlagged) {
+        cellClasses += ' flagged';
+      }
+      if(cell.isMine && (cell.isOpen || gameState.getIsGameOver())) {
+        cellClasses += ' mine';
+      }
+      return `<div class="cell${cellClasses}" data-idx="${cell.idx}"></div>`;
+    }).join('');
   }
 
   clickHandler(e) {
     e.preventDefault();
+    if(gameState.getIsGameOver()) {
+      return;
+    }
     if(!e.target.classList.contains('cell')) {
       return;
     }
@@ -47,6 +59,12 @@ export class Field {
     cell.isOpen = true;
     if(!this.isMinesSet) {
       this.setMines();
+    }
+    if(cell.aroundMines === 0) {
+      this.openAround(cell.idx);
+    }
+    if(cell.isMine) {
+      gameState.loseGame();
     }
     this.render();
   }
@@ -68,6 +86,7 @@ export class Field {
     this.cells.forEach((cell) => {
       const aroundIndexes = this.getAroundIndexes(cell.idx);
       if (cell.isMine) {
+        cell.aroundMines = 9;
         return;
       }
       let aroundCount = 0;
@@ -117,5 +136,21 @@ export class Field {
       return [idx - this.columns, idx - this.columns - 1, idx - 1, idx + this.columns, idx + this.columns - 1];
     }
     return [idx - this.columns - 1, idx - this.columns, idx - this.columns + 1, idx - 1, idx + 1, idx + this.columns - 1, idx + this.columns, idx + this.columns + 1];
+  }
+
+  openAround(index) {
+    const aroundIndexes = this.getAroundIndexes(index);
+    aroundIndexes.forEach((idx) => {
+      const cell = this.cells.find((item) => item.idx === idx);
+      if (cell.aroundMines === 0 && !cell.isOpen) {
+        cell.isOpen = true;
+        cell.isFlagged = false;
+        this.openAround(cell.idx);
+      }
+      else {
+        cell.isOpen = true;
+        cell.isFlagged = false;
+      }
+    });
   }
 }
