@@ -1,17 +1,26 @@
 import { gameState } from './GameState';
 
 export class Field {
-  constructor(selector, rows, columns, mines) {
+  constructor(info, selector, settings) {
+    this.info = info;
     this.root = document.querySelector(selector);
     if (!this.root) {
       throw new Error(`No found element for selector ${selector}`);
     }
-    this.mines = mines;
+    this.mines = settings.mines;
     this.isMinesSet = false;
-    this.rows = rows;
-    this.columns = columns;
-    this.cells = this.generateCells(rows*columns);
+    this.rows = settings.rows;
+    this.columns = settings.columns;
+    const savedState = gameState.getFieldState();
+    if(savedState) {
+      this.cells = savedState;
+      this.isMinesSet = true;
+    }
+    else {
+      this.cells = this.generateCells(this.rows*this.columns);
+    }
     this.render();
+    this.setMinesInfo();
     this.root.onclick = (e) => this.clickHandler(e);
     this.root.addEventListener('contextmenu', (e) => this.clickHandler(e));
   }
@@ -50,6 +59,8 @@ export class Field {
     const cell = this.cells.find((cell) => cell.idx.toString() === e.target.dataset.idx);
     if (e.type === 'contextmenu') {
       cell.isFlagged = !cell.isFlagged;
+      gameState.setFieldState(this.cells);
+      this.setMinesInfo();
       this.render();
       return;
     }
@@ -65,7 +76,11 @@ export class Field {
     }
     if(cell.isMine) {
       gameState.loseGame();
+      this.info.setMessage();
     }
+    gameState.setFieldState(this.cells);
+    this.addMove();
+    this.checkWin();
     this.render();
   }
 
@@ -152,5 +167,24 @@ export class Field {
         cell.isFlagged = false;
       }
     });
+  }
+
+  setMinesInfo() {
+    const flaggedCount = this.cells.filter((cell) => cell.isFlagged).length;
+    gameState.setMines(this.mines - flaggedCount);
+    this.info.setMines();
+  }
+
+  addMove() {
+    gameState.addMove();
+    this.info.setMoves();
+  }
+
+  checkWin() {
+    const openedCount = this.cells.filter((cell) => cell.isOpen).length;
+    if(openedCount >= (this.cells.length - this.mines) && !gameState.getIsGameOver()) {
+      gameState.winGame();
+      this.info.setMessage();
+    }
   }
 }

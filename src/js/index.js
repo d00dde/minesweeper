@@ -1,5 +1,6 @@
 import '../scss/main.scss';
 import { Game } from './Game';
+import { Info } from './Info';
 
 document.body.insertAdjacentHTML('beforeend', `
   <div class="game-wrapper">
@@ -12,11 +13,7 @@ document.body.insertAdjacentHTML('beforeend', `
           <option value="hard">Hard</option>
         </select>
       </div>
-      <div class="info">
-        <div class="score"></div>
-        <div class="icon"></div>
-        <div class="time"></div>
-      </div>
+      <div class="info"></div>
     </div>
     <div class="field-wrapper">
       <div class="field"></div>
@@ -25,4 +22,5 @@ document.body.insertAdjacentHTML('beforeend', `
   </div>
 `);
 
-const game = new Game();
+const info = new Info('.info');
+new Game(info);
