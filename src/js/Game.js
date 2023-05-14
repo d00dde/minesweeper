@@ -7,9 +7,20 @@ export class Game {
     this.fieldWrapper = document.querySelector('.field-wrapper');
     this.newGameBtn = document.querySelector('.new-game-btn');
     this.difficultySelect = document.querySelector('.difficulty-select');
+    this.themeSwitch = document.querySelector('.theme-switch');
     this.startNewGame();
     this.newGameBtn.onclick = () => {
       this.startNewGame(this.difficultySelect.selectedIndex);
+    };
+    this.themeSwitch.onchange = (e) => {
+      if(e.target.checked) {
+        gameState.setTheme('dark');
+        document.body.classList.add('dark');
+      }
+      else {
+        gameState.setTheme('light');
+        document.body.classList.remove('dark');
+      }
     };
   }
 

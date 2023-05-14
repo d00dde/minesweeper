@@ -13,9 +13,11 @@ class Observer {
   }
 
   emit(name, payload) {
+
     const functions = this.store[name];
     if(!functions) {
-      throw new Error(`Not found listeners for event ${name}`);
+      console.log(`Not found listeners for event ${name}`);
+      return;
     }
     functions.forEach((cb) => {
       cb(payload);

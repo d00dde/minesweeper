@@ -7,6 +7,7 @@ export class GameState {
     observer.subscribe('changeIcon', this.setIcon.bind(this));
     observer.subscribe('addMove', this.addMove.bind(this));
     observer.subscribe('setMines', this.setMines.bind(this));
+    observer.subscribe('addWinner', this.addWinner.bind(this));
   }
 
   startGame() {
@@ -92,6 +93,30 @@ export class GameState {
 
   getIcon() {
     return localStorage.getItem('_icon') ?? 'wait';
+  }
+
+  addWinner(name) {
+    const winners = JSON.parse(localStorage.getItem('_winners')) ?? [];
+    winners.push({
+      name,
+      time: this.getTime(),
+      moves: this.getMoves(),
+      difficulty: this.getDifficulty(),
+    });
+    localStorage.setItem('_winners', JSON.stringify(winners));
+    observer.emit('updateWinners');
+  }
+
+  getWinners() {
+    return JSON.parse(localStorage.getItem('_winners')) ?? [];
+  }
+
+  setTheme(theme) {
+    localStorage.setItem('_theme', theme);
+  }
+
+  getTheme() {
+    return localStorage.getItem('_theme') ?? 'light';
   }
 
 }

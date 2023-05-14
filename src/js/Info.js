@@ -66,6 +66,7 @@ export class Info {
     if(gameState.getIsGameOver()) {
       if(gameState.getIsWin()) {
         this.resultMessage.innerText = `Is win by ${gameState.getMoves()} steps in ${gameState.getTime()} seconds`;
+        observer.emit('recordWinner', `Is win by ${gameState.getMoves()} steps in ${gameState.getTime()} seconds`);
       }
       else {
         this.resultMessage.innerText = 'Lose';
