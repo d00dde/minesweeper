@@ -1,18 +1,16 @@
 import { gameState } from './GameState';
-import {observer} from './observer';
+import { observer } from './observer';
+import { Component } from './Component';
 
-export class Info {
+export class Info extends Component {
   constructor(selector) {
-    this.root = document.querySelector(selector);
-    this.render();
+    super(selector);
     this.moves = this.root.querySelector('.moves');
     this.icon = this.root.querySelector('.icon');
     this.mines = this.root.querySelector('.mines');
     this.time = this.root.querySelector('.time');
     this.resultMessage = this.root.querySelector('.result-message');
-    this.setMines();
-    this.setMoves();
-    this.setIcon();
+    this.refresh();
     setInterval(() => {
       if(gameState.getIsGameOver()) {
         return;

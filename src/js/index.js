@@ -3,22 +3,12 @@ import { Game } from './Game';
 import { Info } from './Info';
 import { Modal } from './Modal';
 import { RecordTable } from './RecordTable';
+import { Controls } from './Controls';
 
 document.body.insertAdjacentHTML('beforeend', `
   <div class="game-wrapper">
     <div class="header">
-      <div class="controls">
-        <button class="new-game-btn">New game</button>
-        <select class="difficulty-select">
-          <option value="easy">Easy</option>
-          <option value="normal" selected>Normal</option>
-          <option value="hard">Hard</option>
-        </select>
-        <label class="theme-switch">
-          <input type="checkbox">
-          <div class="slider"></div>
-        </label>
-      </div>
+      <div class="controls"></div>
       <div class="info"></div>
     </div>
     <div class="field-wrapper">
@@ -32,6 +22,7 @@ document.body.insertAdjacentHTML('beforeend', `
 `);
 
 new Info('.info');
+new Controls('.controls');
+new Modal('.modal');
+new RecordTable('.record-table');
 new Game();
-new Modal();
-new RecordTable();

@@ -1,13 +1,11 @@
 import { gameState } from './GameState';
 import { observer } from './observer';
+import { Component } from './Component';
+import { getSettingsByIndex } from './difficulty';
 
-export class RecordTable {
-  constructor() {
-    this.root = document.querySelector('.record-table');
-    if (!this.root) {
-      throw new Error('No found element for selector .record-table');
-    }
-    this.render();
+export class RecordTable extends Component{
+  constructor(selector) {
+    super(selector);
     observer.subscribe('updateWinners', this.render.bind(this));
   }
 
@@ -19,17 +17,8 @@ export class RecordTable {
     else {
       this.root.innerHTML = `
       <ul class="winners-list">
-        ${winners.map((winner) => `<li>Name: ${winner.name}, time: ${winner.time}, moves: ${winner.moves}, difficulty: ${this.getDifficultyByIndex(winner.difficulty)}</li>`).join('')}
+        ${winners.map((winner) => `<li>Name: ${winner.name}, time: ${winner.time}, moves: ${winner.moves}, difficulty: ${getSettingsByIndex(winner.difficulty).className}</li>`).join('')}
       </ul>`;
     }
   }
-
-  getDifficultyByIndex(index) {
-    switch(index) {
-    case 0: return 'Easy';
-    case 1: return 'Normal';
-    case 2: return 'Hard';
-    }
-  }
-
 }
