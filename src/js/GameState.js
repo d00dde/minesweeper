@@ -1,8 +1,19 @@
+import { observer } from './observer';
+
 export class GameState {
+  constructor() {
+    observer.subscribe('winGame', this.winGame.bind(this));
+    observer.subscribe('loseGame', this.loseGame.bind(this));
+    observer.subscribe('changeIcon', this.setIcon.bind(this));
+    observer.subscribe('addMove', this.addMove.bind(this));
+    observer.subscribe('setMines', this.setMines.bind(this));
+  }
+
   startGame() {
     localStorage.setItem('_isGameOver', 'false');
     localStorage.setItem('_isWin', 'false');
     localStorage.setItem('_time', '0');
+    localStorage.setItem('_icon', 'wait');
     localStorage.removeItem('_fieldState');
     localStorage.removeItem('_moves');
     localStorage.removeItem('_mines');
@@ -12,11 +23,13 @@ export class GameState {
   winGame() {
     localStorage.setItem('_isGameOver', 'true');
     localStorage.setItem('_isWin', 'true');
+    this.setIcon('win');
   }
 
   loseGame() {
     localStorage.setItem('_isGameOver', 'true');
     localStorage.setItem('_isWin', 'false');
+    this.setIcon('dead');
   }
 
   setFieldState(state) {
@@ -46,7 +59,7 @@ export class GameState {
 
   addMove() {
     const moves = localStorage.getItem('_moves') ?? '0';
-    localStorage.setItem('_moves', +moves + 1);
+    localStorage.setItem('_moves', (+moves + 1).toString());
   }
 
   getMoves() {
@@ -62,11 +75,7 @@ export class GameState {
   }
 
   getTime() {
-    const time = localStorage.getItem('_time');
-    if(time) {
-      return +time;
-    }
-    return 0;
+    return +localStorage.getItem('_time') ?? 0;
   }
 
   setDifficulty(difficulty) {
@@ -75,6 +84,14 @@ export class GameState {
 
   getDifficulty() {
     return +localStorage.getItem('_difficulty') ?? 1;
+  }
+
+  setIcon(icon) {
+    localStorage.setItem('_icon', icon);
+  }
+
+  getIcon() {
+    return localStorage.getItem('_icon') ?? 'wait';
   }
 
 }

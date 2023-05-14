@@ -1,9 +1,9 @@
 import { Field } from './Field';
 import { gameState } from './GameState';
+import { observer } from './observer';
 
 export class Game {
-  constructor(info) {
-    this.info = info;
+  constructor() {
     this.fieldWrapper = document.querySelector('.field-wrapper');
     this.newGameBtn = document.querySelector('.new-game-btn');
     this.difficultySelect = document.querySelector('.difficulty-select');
@@ -31,10 +31,8 @@ export class Game {
       settings = this.getGameSettingsByIndex(difficulty);
     }
     this.render(settings.className);
-    new Field(this.info,'.field', settings);
-    this.info.setMoves();
-    this.info.setTime();
-    this.info.setMessage();
+    new Field('.field', settings);
+    observer.emit('startGame');
   }
 
   getGameSettingsByIndex(index) {

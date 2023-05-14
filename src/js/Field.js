@@ -1,8 +1,8 @@
 import { gameState } from './GameState';
+import { observer } from './observer';
 
 export class Field {
-  constructor(info, selector, settings) {
-    this.info = info;
+  constructor(selector, settings) {
     this.root = document.querySelector(selector);
     if (!this.root) {
       throw new Error(`No found element for selector ${selector}`);
@@ -11,6 +11,7 @@ export class Field {
     this.isMinesSet = false;
     this.rows = settings.rows;
     this.columns = settings.columns;
+    this.currentTarget = null;
     const savedState = gameState.getFieldState();
     if(savedState) {
       this.cells = savedState;
@@ -21,7 +22,8 @@ export class Field {
     }
     this.render();
     this.setMinesInfo();
-    this.root.onclick = (e) => this.clickHandler(e);
+    this.root.addEventListener('mousedown', (e) => this.mousedownHelper(e));
+    this.root.addEventListener('mouseup', (e) => this.clickHandler(e));
     this.root.addEventListener('contextmenu', (e) => this.clickHandler(e));
   }
 
@@ -56,12 +58,20 @@ export class Field {
     if(!e.target.classList.contains('cell')) {
       return;
     }
+    observer.emit('changeIcon', 'wait');
+    if(this.currentTarget !== e.target) {
+      this.currentTarget = null;
+      return;
+    }
+    this.currentTarget = null;
     const cell = this.cells.find((cell) => cell.idx.toString() === e.target.dataset.idx);
     if (e.type === 'contextmenu') {
-      cell.isFlagged = !cell.isFlagged;
-      gameState.setFieldState(this.cells);
-      this.setMinesInfo();
-      this.render();
+      if (!cell.isOpen) {
+        cell.isFlagged = !cell.isFlagged;
+        gameState.setFieldState(this.cells);
+        this.setMinesInfo();
+        this.render();
+      }
       return;
     }
     if (cell.isOpen || cell.isFlagged) {
@@ -75,13 +85,20 @@ export class Field {
       this.openAround(cell.idx);
     }
     if(cell.isMine) {
-      gameState.loseGame();
-      this.info.setMessage();
+      observer.emit('loseGame');
     }
     gameState.setFieldState(this.cells);
     this.addMove();
     this.checkWin();
     this.render();
+  }
+
+  mousedownHelper(e) {
+    this.currentTarget = e.target;
+    if(gameState.getIsGameOver()) {
+      return;
+    }
+    observer.emit('changeIcon', 'try');
   }
 
   setMines() {
@@ -171,20 +188,17 @@ export class Field {
 
   setMinesInfo() {
     const flaggedCount = this.cells.filter((cell) => cell.isFlagged).length;
-    gameState.setMines(this.mines - flaggedCount);
-    this.info.setMines();
+    observer.emit('setMines', this.mines - flaggedCount);
   }
 
   addMove() {
-    gameState.addMove();
-    this.info.setMoves();
+    observer.emit('addMove');
   }
 
   checkWin() {
     const openedCount = this.cells.filter((cell) => cell.isOpen).length;
     if(openedCount >= (this.cells.length - this.mines) && !gameState.getIsGameOver()) {
-      gameState.winGame();
-      this.info.setMessage();
+      observer.emit('winGame');
     }
   }
 }

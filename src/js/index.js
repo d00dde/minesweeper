@@ -22,5 +22,5 @@ document.body.insertAdjacentHTML('beforeend', `
   </div>
 `);
 
-const info = new Info('.info');
-new Game(info);
+new Info('.info');
+new Game();

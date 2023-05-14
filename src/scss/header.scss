@@ -7,7 +7,7 @@
   background-color: #222;
   .info {
     display: flex;
-    width: 50%;
+    width: 100%;
   }
   .moves,
   .mines,
@@ -19,5 +19,26 @@
     background-color: #ddd;
     text-align: center;
     line-height: 50px;
+  }
+  .result-message {
+    width: 300px;
+  }
+  .icon {
+    width: 50px;
+    height: 50px;
+    margin: 20px;
+    background-size: contain;
+    &.wait {
+      background-image: url("../assets/img/smiles/wait.png");
+    }
+    &.try {
+      background-image: url("../assets/img/smiles/try.png");
+    }
+    &.win {
+      background-image: url("../assets/img/smiles/win.png");
+    }
+    &.dead {
+      background-image: url("../assets/img/smiles/dead.png");
+    }
   }
 }
