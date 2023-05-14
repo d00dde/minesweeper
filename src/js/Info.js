@@ -5,6 +5,7 @@ import { Component } from './Component';
 export class Info extends Component {
   constructor(selector) {
     super(selector);
+    this.render();
     this.moves = this.root.querySelector('.moves');
     this.icon = this.root.querySelector('.icon');
     this.mines = this.root.querySelector('.mines');
@@ -64,7 +65,12 @@ export class Info extends Component {
     if(gameState.getIsGameOver()) {
       if(gameState.getIsWin()) {
         this.resultMessage.innerText = `Is win by ${gameState.getMoves()} steps in ${gameState.getTime()} seconds`;
-        observer.emit('recordWinner', `Is win by ${gameState.getMoves()} steps in ${gameState.getTime()} seconds`);
+        observer.emit('recordWinner', `
+          <h3>Is win by ${gameState.getMoves()} steps in ${gameState.getTime()} seconds</h3>
+          <h3>Type yuor name</h3>
+          <input class='winner-name' type="text">
+          <button class="save-btn">Save</button>
+        `);
       }
       else {
         this.resultMessage.innerText = 'Lose';

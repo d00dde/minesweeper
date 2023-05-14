@@ -5,7 +5,11 @@ export class Modal extends Component {
   constructor(selector) {
     super(selector);
     observer.subscribe('recordWinner', this.show.bind(this));
+    this.root.classList.add('close');
     this.root.onclick = (e) => {
+      if(e.target.classList.contains('close')) {
+        this.hide();
+      }
       if(!e.target.classList.contains('save-btn')) {
         return;
       }
@@ -15,24 +19,20 @@ export class Modal extends Component {
 
   }
 
-  show(message) {
-    this.render(message);
+  show(content) {
+    this.render(content);
     this.root.style.display = 'flex';
   }
 
   hide() {
     this.root.style.display = 'none';
+    this.root.innerHTML = '';
   }
 
-  render(message) {
+  render(content) {
     this.root.innerHTML = `
       <div class="modal-wrapper">
-        <div class="content">
-          <h3>${message}</h3>
-          <h3>Type yuor name</h3>
-          <input class='winner-name' type="text">
-          <button class="save-btn">Save</button>
-        </div>
+        <div class="content">${content}</div>
       </div>
     `;
   }

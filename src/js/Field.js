@@ -1,12 +1,10 @@
 import { gameState } from './GameState';
 import { observer } from './observer';
+import { Component } from './Component';
 
-export class Field {
+export class Field extends Component{
   constructor(selector, settings) {
-    this.root = document.querySelector(selector);
-    if (!this.root) {
-      throw new Error(`No found element for selector ${selector}`);
-    }
+    super(selector);
     this.mines = settings.mines;
     this.isMinesSet = false;
     this.rows = settings.rows;

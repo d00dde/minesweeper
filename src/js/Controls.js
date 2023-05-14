@@ -6,6 +6,7 @@ import { Component } from './Component';
 export class Controls extends Component {
   constructor(selector) {
     super(selector);
+    this.render();
     this.newGameBtn = this.root.querySelector('.new-game-btn');
     this.difficultySelect = this.root.querySelector('.difficulty-select');
     this.themeSwitch = this.root.querySelector('.theme-switch input');
