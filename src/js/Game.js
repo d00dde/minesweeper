@@ -4,7 +4,8 @@ import { observer } from './observer';
 import { getSettingsByIndex } from './difficulty';
 
 export class Game {
-  constructor() {
+  constructor(startGameSound) {
+    this.lol = startGameSound;
     this.fieldWrapper = document.querySelector('.field-wrapper');
     this.startNewGame();
     observer.subscribe('startNewGame', this.startNewGame.bind(this));

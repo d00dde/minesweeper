@@ -4,6 +4,7 @@ import { Info } from './Info';
 import { Modal } from './Modal';
 import { RecordTable } from './RecordTable';
 import { Controls } from './Controls';
+import { Sounds } from './Sounds';
 
 document.body.insertAdjacentHTML('beforeend', `
   <div class="game-wrapper">
@@ -25,4 +26,5 @@ new Info('.info');
 new Controls('.controls');
 new Modal('.modal');
 new RecordTable('.record-table');
+new Sounds();
 new Game();
